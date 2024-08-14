@@ -1,0 +1,113 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Stock Price Aggregator",
+        "description": "Real-time stock price aggregator",
+        "contact": {
+            "email": "aahovhannisyan1@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/",
+            "description": "OpenApi host"
+        }
+    ],
+    "paths": {
+        "/latest-stock-price": {
+            "get": {
+                "tags": [
+                    "Stock Price"
+                ],
+                "summary": "Get latest stock price data for the specified symbol",
+                "description": "Get latest stock price data for the specified symbol",
+                "operationId": "getStockPrice",
+                "parameters": [
+                    {
+                        "name": "symbol",
+                        "in": "query",
+                        "description": "Stock symbol",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/StockSymbol"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Latest stock price data returned",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StockPriceResource"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "StockSymbol": {
+                "type": "string",
+                "enum": [
+                    "AAPL",
+                    "GOOGL",
+                    "MSFT",
+                    "ADBE",
+                    "AMD",
+                    "NVDA",
+                    "AMZN",
+                    "WMT",
+                    "NFLX",
+                    "ABNB"
+                ]
+            },
+            "StockPriceResource": {
+                "properties": {
+                    "timestamp": {
+                        "description": "The stock price timestamp",
+                        "type": "string",
+                        "example": "2024-08-13 19:59:00"
+                    },
+                    "open": {
+                        "description": "The opening price of the stock",
+                        "type": "string",
+                        "example": "220.6600"
+                    },
+                    "high": {
+                        "description": "The highest price of the stock",
+                        "type": "string",
+                        "example": "220.7000"
+                    },
+                    "low": {
+                        "description": "The lowest price of the stock",
+                        "type": "string",
+                        "example": "220.6400"
+                    },
+                    "close": {
+                        "description": "The closing price of the stock",
+                        "type": "string",
+                        "example": "0.0000"
+                    },
+                    "volume": {
+                        "description": "The number of shares traded",
+                        "type": "integer",
+                        "example": 1842
+                    }
+                },
+                "type": "object",
+                "nullable": "true"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Stock Price",
+            "description": "Stock Price"
+        }
+    ]
+}

@@ -31,32 +31,39 @@ namespace App\Enum;
  * Note: If the list of stock symbols becomes dynamic or grows significantly, we may need to reconsider this
  * approach and migrate to a database table to allow for easier updates and scalability.
  */
+
+/**
+ * @OA\Schema(
+ *     schema="StockSymbol",
+ *     type="string",
+ * )
+ */
 enum Stock: int
 {
-    case APPLE = 1;
-    case GOOGLE = 2;
-    case MICROSOFT = 3;
-    case ADOBE = 4;
+    case AAPL = 1;
+    case GOOGL = 2;
+    case MSFT = 3;
+    case ADBE = 4;
     case AMD = 5;
-    case NVIDIA = 6;
-    case AMAZON = 7;
-    case WALMART = 8;
-    case NETFLIX = 9;
-    case AIRBNB = 10;
+    case NVDA = 6;
+    case AMZN = 7;
+    case WMT = 8;
+    case NFLX = 9;
+    case ABNB = 10;
 
     public function symbol(): string
     {
         return match ($this) {
-            self::APPLE => 'AAPL',
-            self::GOOGLE => 'GOOGL',
-            self::MICROSOFT => 'MSFT',
-            self::ADOBE => 'ADBE',
+            self::AAPL => 'AAPL',
+            self::GOOGL => 'GOOGL',
+            self::MSFT => 'MSFT',
+            self::ADBE => 'ADBE',
             self::AMD => 'AMD',
-            self::NVIDIA => 'NVDA',
-            self::AMAZON => 'AMZN',
-            self::WALMART => 'WMT',
-            self::NETFLIX => 'NFLX',
-            self::AIRBNB => 'ABNB',
+            self::NVDA => 'NVDA',
+            self::AMZN => 'AMZN',
+            self::WMT => 'WMT',
+            self::NFLX => 'NFLX',
+            self::ABNB => 'ABNB',
         };
     }
 
