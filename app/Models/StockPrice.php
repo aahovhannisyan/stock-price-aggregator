@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Traits\InitializesFromArray;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class StockPrice extends Model
 {
-    use HasFactory;
+    use HasFactory, InitializesFromArray;
 
     /**
      * The attributes that are mass assignable.

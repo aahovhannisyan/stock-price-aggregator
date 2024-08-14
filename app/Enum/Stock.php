@@ -59,4 +59,15 @@ enum Stock: int
             self::AIRBNB => 'ABNB',
         };
     }
+
+    public static function symbols(): array
+    {
+        $result = [];
+
+        foreach (self::cases() as $case) {
+            $result[$case->symbol()] = $case;
+        }
+
+        return $result;
+    }
 }
