@@ -42,7 +42,9 @@ class AlphaVantageGateway implements StockPricesGatewayContract
         $prices = $response->json('Time Series (1min)');
 
         if (is_null($prices)) {
-            throw new Exception(__('messages.unexpected_format'), Response::HTTP_INTERNAL_SERVER_ERROR);
+            $message = $response->json('message') ?: __('messages.unexpected_format');
+
+            throw new Exception($message, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $prices;
