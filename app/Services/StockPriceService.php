@@ -92,7 +92,7 @@ class StockPriceService
      * @param Carbon $endDate
      * @return Collection
      */
-    public function getStockPricesByDate(string $symbol, Carbon $startDate, Carbon $endDate): Collection
+    private function getStockPricesByDate(string $symbol, Carbon $startDate, Carbon $endDate): Collection
     {
         $stock = Stock::symbols()[$symbol] ?? null;
 
@@ -115,5 +115,28 @@ class StockPriceService
         }
 
         return round(($first->high - $second->high) / $second->high * 100, 2);
+    }
+
+    /**
+     * @param string $symbol
+     * @return float|null
+     */
+    public function getPercentChange(string $symbol): ?float
+    {
+        $stock = Stock::symbols()[$symbol] ?? null;
+        $percentChange = null;
+        $stockPrices = StockPrice::query()
+            ->where('stock_id', $stock->value)
+            ->orderBy('timestamp', 'desc')
+            ->get();
+
+        if ($stockPrices->count() >= 2) {
+            $percentChange = $this->calculatePercentChange(
+                $stockPrices->first(),
+                $stockPrices->skip(1)->first()
+            );
+        }
+
+        return $percentChange;
     }
 }

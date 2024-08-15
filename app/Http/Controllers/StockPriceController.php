@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\Stock;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Services\StockPriceService;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use App\Http\Resources\StockPriceResource;
 use App\Http\Requests\GetLatestStockPriceRequest;
 use App\Http\Requests\GetStockPriceReportRequest;
@@ -157,5 +162,29 @@ class StockPriceController
             'stockPrices' => StockPriceResource::collection($reportData['stockPrices']),
             'percentChange' => $reportData['percentChange'],
         ];
+    }
+
+
+    /**
+     * @param Request $request
+     * @return View|Factory|Application
+     */
+    public function show(Request $request): View|Factory|Application
+    {
+        $symbol = $request->input('symbol');
+        $stock = Stock::symbols()[$symbol] ?? null;
+
+        if (is_null($stock)) {
+            abort('404');
+        }
+
+        $latestPrice = $this->service->getLatestPrice($symbol);
+        $percentChange = $this->service->getPercentChange($symbol);
+
+        return view('stocks.show', [
+            'stock' => $stock,
+            'latestPrice' => $latestPrice,
+            'percentChange' => $percentChange,
+        ]);
     }
 }
