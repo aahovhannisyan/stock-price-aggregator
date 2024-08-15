@@ -62,6 +62,8 @@ The application exposes 2 REST API endpoints:
 - /api/latest-stock-price
 - /api/report
 
+The OpenAPI Specification for these endpoints can be found here: `http://your-domain/api/documentation`
+
 ## User Interface
 
 The application provides a UI that shows the latest stock price with visual indicators (e.g: color-coded arrows)
