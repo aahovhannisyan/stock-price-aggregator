@@ -4,10 +4,17 @@ namespace App\Services;
 
 use App\Enum\Stock;
 use App\Models\StockPrice;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Collection;
 
 class StockPriceService
 {
+    /**
+     * @param Stock $stock
+     * @param array $prices
+     * @return void
+     */
     public function updateStockPrices(Stock $stock, array $prices): void
     {
         $data = [];
@@ -38,6 +45,10 @@ class StockPriceService
         Cache::put('stock_price_' . $stock->symbol(), StockPrice::fromArray($data[0]), $minuteInSeconds);
     }
 
+    /**
+     * @param string $symbol
+     * @return StockPrice|null
+     */
     public function getLatestPrice(string $symbol): ?StockPrice
     {
         $stock = Stock::symbols()[$symbol] ?? null;
@@ -49,5 +60,60 @@ class StockPriceService
                 ->orderBy('timestamp', 'desc')
                 ->first();
         });
+    }
+
+    /**
+     * @param string $symbol
+     * @param Carbon $startDate
+     * @param Carbon $endDate
+     * @return array
+     */
+    public function getReport(string $symbol, Carbon $startDate, Carbon $endDate): array
+    {
+        $stockPrices = $this->getStockPricesByDate($symbol, $startDate, $endDate);
+        $percentChange = null;
+
+        if ($stockPrices->count() >= 2) {
+            $percentChange = $this->calculatePercentChange(
+                $stockPrices->first(),
+                $stockPrices->skip(1)->first()
+            );
+        }
+
+        return [
+            'stockPrices' => $stockPrices,
+            'percentChange' => $percentChange,
+        ];
+    }
+
+    /**
+     * @param string $symbol
+     * @param Carbon $startDate
+     * @param Carbon $endDate
+     * @return Collection
+     */
+    public function getStockPricesByDate(string $symbol, Carbon $startDate, Carbon $endDate): Collection
+    {
+        $stock = Stock::symbols()[$symbol] ?? null;
+
+        return StockPrice::query()
+            ->where('stock_id', $stock->value)
+            ->whereBetween('timestamp', [$startDate, $endDate])
+            ->orderBy('timestamp', 'desc')
+            ->get();
+    }
+
+    /**
+     * @param StockPrice $first
+     * @param StockPrice $second
+     * @return float|null
+     */
+    private function calculatePercentChange(StockPrice $first, StockPrice $second): ?float
+    {
+        if ((int)$second->high === 0) {
+            return null;
+        }
+
+        return round(($first->high - $second->high) / $second->high * 100, 2);
     }
 }

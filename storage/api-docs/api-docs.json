@@ -44,6 +44,124 @@
                                 }
                             }
                         }
+                    },
+                    "422": {
+                        "description": "Invalid parameters provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The selected symbol is invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "symbol": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The selected symbol is invalid."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/report": {
+            "get": {
+                "tags": [
+                    "Stock Price"
+                ],
+                "summary": "Get stock price report",
+                "description": "Get stock prices and percentage change based on provided dates",
+                "operationId": "getStockPriceReport",
+                "parameters": [
+                    {
+                        "name": "symbol",
+                        "in": "query",
+                        "description": "Stock symbol",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/StockSymbol"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "description": "Start date",
+                        "required": true,
+                        "example": "2024-08-13 19:50:00"
+                    },
+                    {
+                        "name": "end",
+                        "in": "query",
+                        "description": "End date",
+                        "required": true,
+                        "example": "2024-08-13 19:59:00"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Stock price report returned",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "stockPrices": {
+                                            "description": "The stock prices between the start date and the end date",
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/StockPriceResource"
+                                            }
+                                        },
+                                        "percentChange": {
+                                            "description": "The percentage change",
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": 0.02
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid parameters provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The selected symbol is invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "symbol": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The selected symbol is invalid."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }

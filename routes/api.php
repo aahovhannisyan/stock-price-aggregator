@@ -6,4 +6,5 @@ use App\Http\Controllers\StockPriceController;
 
 Route::middleware(ForceJson::class)->group(function () {
     Route::get('/latest-stock-price', [StockPriceController::class, 'index']);
+    Route::get('/report', [StockPriceController::class, 'getReport']);
 });
