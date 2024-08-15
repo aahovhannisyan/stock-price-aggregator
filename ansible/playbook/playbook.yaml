@@ -1,0 +1,62 @@
+---
+- hosts: all
+  become: yes
+  vars:
+    releases_dir: "{{ app_dir }}/releases"
+    current_dir: "{{ app_dir }}/current"
+    timestamp: "{{ ansible_date_time.iso8601_basic }}"
+    release_dir: "{{ releases_dir }}/{{ timestamp }}"
+  tasks:
+    - name: Ensure release directory exists
+      file:
+        path: "{{ release_dir }}"
+        state: directory
+
+    - name: Pull latest code from Git
+      git:
+        repo: 'git@github.com:aahovhannisyan/stock-price-aggregator.git'
+        key_file: '~/.ssh/spa'
+        dest: '{{ release_dir }}'
+        version: 'master'
+
+    - name: Install Composer dependencies
+      command: composer install --no-dev --prefer-dist --no-progress --no-interaction
+      args:
+        chdir: '{{ release_dir }}'
+
+    - name: Set up .env file
+      copy:
+        src: "{{ app_dir }}/shared/.env"
+        dest: '{{ release_dir }}/.env'
+        remote_src: yes
+        mode: '0644'
+
+    - name: Run database migrations
+      command: php artisan migrate --force
+      args:
+        chdir: '{{ release_dir }}'
+
+    - name: Install artifacts
+      shell: |
+        cd {{ release_dir }}
+        npm i
+        npm run build
+
+    - name: Optimize Laravel application
+      command: php artisan optimize
+      args:
+        chdir: '{{ release_dir }}'
+
+    - name: Set ownership to www-data
+      command: chown -R www-data:www-data '{{ release_dir }}'
+
+    - name: Update symlink
+      file:
+        src: '{{ release_dir }}'
+        dest: '{{ current_dir }}'
+        state: link
+
+    - name: Cleanup old releases
+      shell: |
+        cd {{ releases_dir }}
+        ls -dt {{ releases_dir }}/* | tail -n +6 | xargs rm -rf
