@@ -7,4 +7,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/stocks', [StockPriceController::class, 'show']);
+Route::get('/report', [StockPriceController::class, 'show']);
