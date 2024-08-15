@@ -17,7 +17,7 @@ class StockPriceController
 
     /**
      * @OA\Get(
-     *     path="/latest-stock-price",
+     *     path="/api/latest-stock-price",
      *     tags={"Stock Price"},
      *     operationId="getStockPrice",
      *     summary="Get latest stock price data for the specified symbol",
@@ -72,7 +72,7 @@ class StockPriceController
 
     /**
      * @OA\Get(
-     *     path="/report",
+     *     path="/api/report",
      *     tags={"Stock Price"},
      *     operationId="getStockPriceReport",
      *     summary="Get stock price report",

@@ -15,7 +15,7 @@
         }
     ],
     "paths": {
-        "/latest-stock-price": {
+        "/api/latest-stock-price": {
             "get": {
                 "tags": [
                     "Stock Price"
@@ -76,7 +76,7 @@
                 }
             }
         },
-        "/report": {
+        "/api/report": {
             "get": {
                 "tags": [
                     "Stock Price"
